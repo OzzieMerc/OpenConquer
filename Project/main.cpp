@@ -9,8 +9,8 @@
 */
 
 #include <iostream>
-#include "Source/Window.h"
-#include "Source/Input.h"
+#include "Source/Window/Window.h"
+#include "Source/Input/Input.h"
 
 int main(int _argc, char** _argv)
 {
