@@ -56,5 +56,9 @@ namespace OC
 		// Description: Runs the window message loop.
 		// Returns: false, if the window is closed.
 		virtual bool Update() = 0;
+
+		// Description: Returns a handle to the window.
+		// Returns: Pointer to the window handle.
+		virtual void* GetHandle() const = 0;
 	};
 }

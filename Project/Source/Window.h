@@ -15,5 +15,5 @@
 #if defined(WIN32)
 #include "Win32Window.h"
 #else
-static_assert(false, "Open Conquer Error: Window implentation not available for this platform");
+static_assert(false, "Open Conquer Error: Window implementation not available for this platform");
 #endif

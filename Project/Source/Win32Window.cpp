@@ -130,6 +130,14 @@ namespace OC
 			}
 		}
 
+
 		return true;
+	}
+
+	void* Window::GetHandle() const
+	{
+		assert(m_WindowHandle); // Error: Window does not exist.
+
+		return reinterpret_cast<void*>(m_WindowHandle);
 	}
 }
