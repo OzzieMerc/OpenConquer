@@ -37,14 +37,18 @@ int main(int _argc, char** _argv)
 		else if (input.Pressed(OC::Key::S))
 			std::cout << "Pressed: S\n";
 		//else if (input.Released(OC::Key::S))
-		//	std::cout << "Released: S\n";
+		//	std::cout << "Released: S\n"; // Commented out so it doesn't spam the console.
 
-		static int x, y, difX, difY;
+		static int x, y, difX, difY, wheelDelta;
 		input.GetCursorPosition(x, y);
-		input.GetCursorRelativeMovement(difX, difY);
+		input.GetCursorDelta(difX, difY);
+		input.GetWheelDelta(wheelDelta);
 
 		if (difX != 0 || difY != 0)
 			printf("Mouse: x=%d y=%d dX=%d dY=%d\n", x, y, difX, difY);
+
+		if (wheelDelta != 0)
+			printf("Wheel: %d\n", wheelDelta);
 
 		// Render
 	}

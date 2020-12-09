@@ -28,6 +28,13 @@ namespace OC
 		case WM_RBUTTONUP:		s_Instance->Set(Key::MOUSE_RIGHT, false);					break;
 		case WM_MBUTTONDOWN:	s_Instance->Set(Key::MOUSE_MIDDLE, true);					break;
 		case WM_MBUTTONUP:		s_Instance->Set(Key::MOUSE_MIDDLE, false);					break;
+		case WM_MOUSEWHEEL:
+		{
+			// TODO: Test this on a freely-rotating wheel. May have to consider using float to represent m_WheelDelta.
+			short delta = GET_WHEEL_DELTA_WPARAM(_wParam) / WHEEL_DELTA;
+			s_Instance->SetWheel(static_cast<int>(delta));
+			break;
+		}
 		case WM_MOUSEMOVE:
 		{
 			POINTS cursor = MAKEPOINTS(_lParam);
@@ -63,6 +70,12 @@ namespace OC
 				m_StateChanged = true;
 			}
 		}
+	}
+
+	void Input::SetWheel(int _delta)
+	{
+		m_WheelDelta = _delta;
+		m_MouseMoved = true;
 	}
 
 	void Input::SetCursor(int _x, int _y)
@@ -113,10 +126,15 @@ namespace OC
 		_outY = m_MouseY;
 	}
 
-	void Input::GetCursorRelativeMovement(int& _outDifX, int& _outDifY) const
+	void Input::GetCursorDelta(int& _outDeltaX, int& _outDeltaY) const
 	{
-		_outDifX = m_MouseX - m_MousePrevX;
-		_outDifY = m_MouseY - m_MousePrevY;
+		_outDeltaX = m_MouseX - m_MousePrevX;
+		_outDeltaY = m_MouseY - m_MousePrevY;
+	}
+
+	void Input::GetWheelDelta(int& _outDelta) const
+	{
+		_outDelta = m_WheelDelta;
 	}
 
 	void Input::Update()
@@ -133,6 +151,7 @@ namespace OC
 			// Keep track of previous mouse position for relative movement calculation.
 			m_MousePrevX = m_MouseX;
 			m_MousePrevY = m_MouseY;
+			m_WheelDelta = 0;
 			m_MouseMoved = false;
 		}
 	}

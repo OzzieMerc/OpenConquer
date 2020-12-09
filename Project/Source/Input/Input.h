@@ -4,8 +4,9 @@
 	Author: Ozzie Mercado
 	Created: December 7, 2020
 	Modified: December 8, 2020
-	Description: A cross-platform Window that can open, close, and update a window. The class serves as
-		a wrapper for a platform-specific window implementation. Currently, only Win32 is supported.
+	Description: A cross-platform Input that can provide information about key states, cursor button
+		states, and cursor position information. The class serves as a wrapper for a platform-specific 
+		input implementation. Currently, only Win32 is supported.
 -------------------------------------------------------------------------------------------------------
 */
 

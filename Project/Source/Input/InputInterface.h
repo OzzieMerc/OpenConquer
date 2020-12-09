@@ -64,9 +64,14 @@ namespace OC
 
 		// Description: Gets the relative motion of the cursor since last update.
 		// Parameters: 
-		//    int& _outDifX, relative motion on the x-axis.
-		//    int& _outDifY, relative motion on the y-axis.
-		virtual void GetCursorRelativeMovement(int& _outDifX, int& _outDifY) const = 0;
+		//    int& _outDeltaX, relative motion on the x-axis.
+		//    int& _outDeltaY, relative motion on the y-axis.
+		virtual void GetCursorDelta(int& _outDeltaX, int& _outDeltaY) const = 0;
+
+		// Description: Gets the change in mouse scroll-wheel position since last update.
+		// Parameters: 
+		//    int& _outDelta, change in position of the mouse wheel.
+		virtual void GetWheelDelta(int& _outDelta) const = 0;
 
 		// Description: Updates the state of the input system.
 		virtual void Update() = 0;

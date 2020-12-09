@@ -29,6 +29,7 @@ namespace OC
 		WNDPROC m_OriginalWindowProcedure; // Pointer to the windows procedure function.
 		int m_MouseX, m_MouseY; // Cursor position.
 		int m_MousePrevX, m_MousePrevY; // Previous cursor position.
+		int m_WheelDelta; // The change in mouse scroll-wheel position since last update.
 		std::bitset<static_cast<unsigned int>(Key::_COUNT)> m_State; // The state of all keys and mouse buttons.
 		std::bitset<static_cast<unsigned int>(Key::_COUNT)> m_PrevState; // The previous state of all keys and mouse buttons.
 		bool m_StateChanged; // Tracks change in keys and mouse buttons since last update.
@@ -55,6 +56,11 @@ namespace OC
 		//    bool _isDown, if the input is pressed down.
 		void Set(unsigned int _keyCode, bool _isDown);
 
+		// Description: Updates how much the mouse wheel has moved.
+		// Parameters: 
+		//    int _delta, how much the wheel has moved.
+		void SetWheel(int _delta);
+
 		// Description: Updates this object's coordinates of the cursor.
 		// Parameters: 
 		//    int _x, the x position of the cursor.
@@ -69,6 +75,7 @@ namespace OC
 			InputInterface(_window),
 			m_MouseX(0), m_MouseY(0),
 			m_MousePrevX(0), m_MousePrevY(0),
+			m_WheelDelta(0),
 			m_State(), m_PrevState(),
 			m_StateChanged(false), m_MouseMoved(false)
 		{
@@ -138,9 +145,14 @@ namespace OC
 
 		// Description: Gets the relative motion of the cursor since last update.
 		// Parameters: 
-		//    int& _outDifX, relative motion on the x-axis.
-		//    int& _outDifY, relative motion on the y-axis.
-		void GetCursorRelativeMovement(int& _outDifX, int& _outDifY) const;
+		//    int& _outDeltaX, relative motion on the x-axis.
+		//    int& _outDeltaY, relative motion on the y-axis.
+		void GetCursorDelta(int& _outDeltaX, int& _outDeltaY) const;
+
+		// Description: Gets the change in mouse scroll-wheel position since last update.
+		// Parameters: 
+		//    int& _outDelta, change in position of the mouse wheel.
+		void GetWheelDelta(int& _outDelta) const;
 
 		// Description: Updates the state of the input system.
 		void Update();
