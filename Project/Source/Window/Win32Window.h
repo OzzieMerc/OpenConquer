@@ -46,20 +46,10 @@ namespace OC
 		//    int _y, the y position of the window.
 		//    unsigned int _width, the horizontal width of the drawable area of the window.
 		//    unsigned int _height, the vertical height of the drawable area of the window.
-		Window(const wchar_t* _name, int _x, int _y, unsigned int _width, unsigned int _height) :
-			WindowInterface(_name, _x, _y, _width, _height),
-			m_WindowHandle(nullptr),
-			m_DeviceContextHandle(nullptr),
-			m_InstanceHandle(nullptr)
-		{
-			Open();
-		}
+		Window(const wchar_t* _name, int _x, int _y, unsigned int _width, unsigned int _height);
 
 		// Description: Closes the window if it's open, and cleans up references.
-		~Window()
-		{
-			Close();
-		}
+		~Window();
 
 		// Description: Registers and opens a window.
 		// Returns: true, if the window opened.

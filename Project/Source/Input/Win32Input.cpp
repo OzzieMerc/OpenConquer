@@ -12,6 +12,8 @@
 
 namespace OC
 {
+	// private
+
 	Input* Input::s_Instance = nullptr;
 
 	LRESULT Input::InputPocedure(HWND _hWnd, UINT _message, WPARAM _wParam, LPARAM _lParam)
@@ -84,6 +86,43 @@ namespace OC
 		m_MouseY = _y;
 		m_MouseMoved = true;
 	}
+
+	// public
+
+	Input::Input(const Window& _window) :
+		InputInterface(_window),
+		m_MouseX(0), m_MouseY(0),
+		m_MousePrevX(0), m_MousePrevY(0),
+		m_WheelDelta(0),
+		m_State(), m_PrevState(),
+		m_StateChanged(false), m_MouseMoved(false)
+	{
+		assert(!s_Instance); // Error: There can only be one instance of Input.
+
+		s_Instance = this;
+		m_WindowHandle = static_cast<HWND>(_window.GetHandle());
+
+		// Setup window message interception.
+		m_OriginalWindowProcedure = reinterpret_cast<WNDPROC>(SetWindowLongPtr(
+			m_WindowHandle,
+			GWLP_WNDPROC,
+			reinterpret_cast<LONG_PTR>(InputPocedure))
+			);
+
+		assert(m_OriginalWindowProcedure); // Error: Input will not receive input messages if this is NULL.
+	}
+
+	Input::~Input()
+	{
+		// Stop intercepting messages from window.
+		SetWindowLongPtr(
+			m_WindowHandle,
+			GWLP_WNDPROC,
+			reinterpret_cast<LONG_PTR>(m_OriginalWindowProcedure)
+		);
+
+		s_Instance = nullptr;
+	};
 
 	bool Input::JustPressed(Key _key) const
 	{

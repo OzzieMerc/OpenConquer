@@ -71,47 +71,10 @@ namespace OC
 		// Description: Constructs the input system and sets it up to receive input messages from the window.
 		// Parameters: 
 		//    const Window& _window, the window to intercept input messages from.
-		Input(const Window& _window) :
-			InputInterface(_window),
-			m_MouseX(0), m_MouseY(0),
-			m_MousePrevX(0), m_MousePrevY(0),
-			m_WheelDelta(0),
-			m_State(), m_PrevState(),
-			m_StateChanged(false), m_MouseMoved(false)
-		{
-			assert(!s_Instance); // Error: There can only be one instance of Input.
-
-			s_Instance = this;
-			m_WindowHandle = static_cast<HWND>(_window.GetHandle());
-
-			// Setup window message interception.
-			m_OriginalWindowProcedure = reinterpret_cast<WNDPROC>(SetWindowLongPtr(
-				m_WindowHandle,
-				GWLP_WNDPROC,
-				reinterpret_cast<LONG_PTR>(InputPocedure))
-			);
-
-			assert(m_OriginalWindowProcedure); // Error: Input will not receive input messages if this is NULL.
-		}
-
-		// Description: Input's cannot be created from other Input's.
-		Input(const Input& _input) = delete;
+		Input(const Window& _window);
 
 		// Description: Remove the input from the window and clean up this instance.
-		~Input()
-		{
-			// Stop intercepting messages from window.
-			SetWindowLongPtr(
-				m_WindowHandle,
-				GWLP_WNDPROC,
-				reinterpret_cast<LONG_PTR>(m_OriginalWindowProcedure)
-			);
-
-			s_Instance = nullptr;
-		};
-
-		// Description: Input's cannot be assigned to other Input's.
-		virtual void operator=(const Input& _window) = delete;
+		~Input();
 
 		// Description: Returns if the given key state changed to pressed since last update.
 		// Parameters: 

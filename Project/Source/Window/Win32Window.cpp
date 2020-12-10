@@ -13,6 +13,8 @@
 
 namespace OC
 {
+	// private
+
 	LRESULT CALLBACK Window::WindowPocedure(HWND _hWnd, UINT _message, WPARAM _wParam, LPARAM _lParam)
 	{
 		switch (_message)
@@ -35,6 +37,22 @@ namespace OC
 			L"Window Error",
 			NULL
 		);
+	}
+
+	// public
+
+	Window::Window(const wchar_t* _name, int _x, int _y, unsigned int _width, unsigned int _height) :
+		WindowInterface(_name, _x, _y, _width, _height),
+		m_WindowHandle(nullptr),
+		m_DeviceContextHandle(nullptr),
+		m_InstanceHandle(nullptr)
+	{
+		Open();
+	}
+
+	Window::~Window()
+	{
+		Close();
 	}
 	
 	bool Window::Open()
