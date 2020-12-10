@@ -11,11 +11,13 @@
 #include <iostream>
 #include "Source/Window/Window.h"
 #include "Source/Input/Input.h"
+#include "Source/Renderer/Renderer.h"
 
 int main(int _argc, char** _argv)
 {
 	OC::Window win(L"Open Conquer", 400, 200, 960, 600);
 	OC::Input input(win);
+	OC::Renderer renderer(win);
 	
 	while (true)
 	{
@@ -51,6 +53,7 @@ int main(int _argc, char** _argv)
 			printf("Wheel: %d\n", wheelDelta);
 
 		// Render
+		renderer.Present();
 	}
 
 	std::cin.ignore();
