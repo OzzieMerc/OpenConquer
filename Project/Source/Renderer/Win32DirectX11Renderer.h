@@ -14,12 +14,13 @@
 #if defined(WIN32)
 
 #pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "D3DCompiler.lib")
 
 #include <d3d11.h>
-#include <assert.h>
+#include <d3dcompiler.h>
+#include <string>
+#include "Shaders/ConstantBufferStructs.hlsli"
 #include "RendererInterface.h"
-
-#define AssertHResult(_hr) assert(_hr >= 0)
 
 namespace OC
 {
@@ -29,23 +30,68 @@ namespace OC
 		static Renderer* s_Instance; // Private singleton used to ensure only one instance of this class exists.
 
 		HWND m_WindowHandle; // Handle to the window.
-		ID3D11Device* m_d3dDevice;
-		ID3D11DeviceContext* m_d3dDeviceContext;
-		IDXGISwapChain* m_swapChain;
-		ID3D11RenderTargetView* m_renderTargetView;
+		ID3D11Device* m_Device;
+		ID3D11DeviceContext* m_DeviceContext;
+		IDXGISwapChain* m_SwapChain;
+		ID3D11RenderTargetView* m_RenderTargetView;
+		ID3D11Buffer* m_ConstantBuffer;
+		ID3D11VertexShader* m_VertexShader;
+		ID3D11PixelShader* m_PixelShader;
+		ID3D11InputLayout* m_InputLayout;
+		ID3D11RasterizerState* m_RasterState;
 
-		// Description: Releases an IUnknown object. Fails safely if the pointer points to nullptr.
+		MVP m_MVP;
+		float m_Aspect;
+
+		// Description: Determines the supported shader profile and creates a string representation of it.
 		// Parameters: 
-		//    typename T, ID3D11 type.
+		//    char* _outVertexProfileStr, the string representation of the shader profile.
+		// Returns: true, if DirectX feature level is supported and _outProfileStr was set.
+		bool GetVertexShaderProfileString(std::string& _outProfileStr) const;
+		bool GetPixelShaderProfileString(std::string& _outProfileStr) const;
+
+		// Description: Creates a shader using a given shader blob.
+		// Parameters: 
+		//    ID3DBlob* _shaderBlob, blob to use when creating the shader.
+		// Returns: The created shader or nullptr if unsuccessful.
+		ID3D11VertexShader* CreateVertexShader(ID3DBlob* _shaderBlob) const;
+		ID3D11PixelShader* CreatePixelShader(ID3DBlob* _shaderBlob) const;
+
+		// Description: Compiles an hlsl vertex shader, creates input layout for it, and returns the shader.
+		//    Also, outputs to the console if there is an error during compilation or with file IO.
+		// Parameters: 
+		//    const wchar_t* _fileName, name and path to the hlsl file.
+		//    D3D11_INPUT_ELEMENT_DESC* _layoutDescs, descriptions for the input-assembler.
+		//    unsigned int _numLayoutDescs, number of descriptions for the input-assembler.
+		//    ID3D11InputLayout** _outInputLayout, the returned input layout if it can be created.
+		// Returns: The created shader or nullptr if unsuccessful.
+		ID3D11VertexShader* CompileAndLoadVertexShader(const wchar_t* _fileName,
+													   D3D11_INPUT_ELEMENT_DESC* _layoutDescs,
+													   unsigned int _numLayoutDescs,
+													   ID3D11InputLayout** _outInputLayout);
+
+		// Description: Compiles an hlsl pixel shader and returns it. Also, outputs to the console if there is
+		//    an error during compilation or with file IO.
+		// Parameters: 
+		//    const wchar_t* _fileName, name and path to the hlsl file.
+		// Returns: The created shader or nullptr if unsuccessful.
+		ID3D11PixelShader* CompileAndLoadPixelShader(const wchar_t* _fileName);
+
+		// Description: Releases an IUnknown object, which ID3D11 objects inherit from. Fails safely if the
+		//    pointer points to nullptr.
+		// Parameters: 
 		//    IUnknown* _object, the object to release.
 		inline void SafeRelease(IUnknown* _object)
 		{
 			if (_object)
 				_object->Release();
 		}
-
+		
 		// Description: Resize the the renderer.
 		void Resize();
+
+		// Description: Draws a triangle to the render target.
+		void DrawTestTriangle();
 
 	public:
 		// Description: Constructs the renderer system and sets it up to output to the window.
@@ -60,7 +106,5 @@ namespace OC
 		void Present();
 	};
 }
-
-#undef assertHResult
 
 #endif //defined(WIN32)
